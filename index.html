@@ -3,20 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Chatbot</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #chatbox { width: 300px; height: 400px; border: 1px solid #ccc; overflow-y: scroll; padding: 10px; margin: 0 auto; }
+        .user { color: blue; text-align: right; }
+        .bot { color: green; text-align: left; }
+        input { width: 70%; padding: 5px; }
+        button { padding: 5px; }
+    </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-box" id="chatBox">
-            <div class="chat-message bot">Hello! How can I assist you today?</div>
-        </div>
-        <div class="chat-input">
-            <input type="text" id="userInput" placeholder="Type your message..." />
-            <button onclick="sendMessage()">Send</button>
-        </div>
-    </div>
 
-    <script src="script.js"></script>
+    <h2>🤖 AI Chatbot</h2>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function sendMessage() {
+            let userInput = document.getElementById("userInput").value;
+            document.getElementById("chatbox").innerHTML += "<p class='user'>You: " + userInput + "</p>";
+            document.getElementById("userInput").value = "";
+
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("chatbox").innerHTML += "<p class='bot'>Bot: " + data.reply + "</p>";
+            });
+        }
+    </script>
+
 </body>
 </html>
